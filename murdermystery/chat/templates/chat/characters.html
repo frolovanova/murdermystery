@@ -1,0 +1,183 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Murder Mystery Characters</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            max-width: 800px;
+            background-color: #f0f0f0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #character-list {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .character {
+            margin-bottom: 20px;
+        }
+
+        .character img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 10px auto;
+        }
+        .chat-button {
+        display: inline-block;
+        margin-left: 240px;
+        background-color: #007BFF;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px; /* Adjust padding to change button size */
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease; /* Add a smooth hover effect */
+    }
+
+    .chat-button:hover {
+        background-color: #0056b3; /* Change color on hover */
+    }
+
+        #chat-button {
+            display: block;
+            width: 100px;
+            margin: 20px auto;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        #chat-button:hover {
+            background-color: #0056b3;
+        }
+        #home-button {
+            width: 100px;
+            top: 25px;
+            margin: 50px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <a href="/home/{{ game_code }}/" id="home-button">Home</a>
+
+    <h1>Murder Mystery Characters</h1>
+    <div id="character-list">
+        {% if 'guy1' in your_context %}
+        <div class="detectivejohnson">
+            <h2>Detective Johnson</h2>
+            <p>A skilled detective known for his sharp wit and attention to detail. Detective Johnson has solved numerous complex cases.</p>
+            <img src="{% static 'images/guy1.png' %}" alt="Detective Johnson">
+            {% if selectedCharacter != 'detectivejohnson' %}
+                <a href="/chat/{{ game_code }}/{{ selectedCharacter }}/detectivejohnson/" class="chat-button">Chat</a> <!-- Add the Chat button -->
+            {% endif %}
+        </div>
+        {% endif %}
+    
+        {% if 'girl1' in your_context %}
+        <div class="mselizabethblackwood">
+            <h2>Ms. Elizabeth Blackwood</h2>
+            <p>A wealthy heiress with a mysterious past. She is known for her charm and elegant demeanor.</p>
+            <img src="{% static 'images/girl1.png' %}" alt="Ms. Elizabeth Blackwood">
+            {% if selectedCharacter != 'mselizabethblackwood' %}
+                <a href="/chat/{{ game_code }}/{{ selectedCharacter }}/mselizabethblackwood/" class="chat-button">Chat</a> <!-- Add the Chat button -->
+            {% endif %}
+        </div>
+        {% endif %}
+    
+        {% if 'guy2' in your_context %}
+        <div class="professorarthurgrayson">
+            <h2>Professor Arthur Grayson</h2>
+            <p>An eccentric academic with a passion for ancient artifacts. He has a tendency to get lost in his research.</p>
+            <img src="{% static 'images/guy2.png' %}" alt="Professor Arthur Grayson">
+            {% if selectedCharacter != 'professorarthurgrayson' %}
+                <a href="/chat/{{ game_code }}/{{ selectedCharacter }}/professorarthurgrayson/" class="chat-button">Chat</a> <!-- Add the Chat button -->
+            {% endif %}
+        </div>
+        {% endif %}
+    
+        {% if 'girl2' in your_context %}
+        <div class="victoriavickyhart">
+            <h2>Victoria "Vicky" Hart</h2>
+            <p>A feisty journalist known for her relentless pursuit of the truth. Vicky has a knack for uncovering secrets.</p>
+            <img src="{% static 'images/girl2.png' %}" alt="Victoria 'Vicky' Hart">
+            {% if selectedCharacter != 'victoriavickyhart' %}
+                <a href="/chat/{{ game_code }}/{{ selectedCharacter }}/victoriavickyhart/" class="chat-button">Chat</a> <!-- Add the Chat button -->
+            {% endif %}
+        </div>
+        {% endif %}
+    
+        {% if 'guy3' in your_context %}
+        <div class="drjonathansmith">
+            <h2>Dr. Jonathan Smith</h2>
+            <p>A brilliant but introverted scientist specializing in forensics. Dr. Smith can find clues others might miss.</p>
+            <img src="{% static 'images/guy3.png' %}" alt="Dr. Jonathan Smith">
+            {% if selectedCharacter != 'drjonathansmith' %}
+                <a href="/chat/{{ game_code }}/{{ selectedCharacter }}/drjonathansmith/" class="chat-button">Chat</a> <!-- Add the Chat button -->
+            {% endif %}
+        </div>
+        {% endif %}
+    
+        {% if 'girl3' in your_context %}
+        <div class="emilyjohnson">
+            <h2>Emily Johnson</h2>
+            <p>The victim's close friend, Emily is deeply shocked by the murder. She might hold crucial information about the case.</p>
+            <img src="{% static 'images/girl3.png' %}" alt="Emily Johnson">
+            {% if selectedCharacter != 'emilyjohnson' %}
+                <a href="/chat/{{ game_code }}/{{ selectedCharacter }}/emilyjohnson/" class="chat-button">Chat</a> <!-- Add the Chat button -->
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+    
+    <a href="" id="chat-button">Chat</a>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
+<script>
+    // Retrieve the selected character from the cookie
+const selectedCharacter = Cookies.get('selectedCharacter'); // Make sure 'selected_character' matches the cookie name
+
+// Update the link's href attribute
+const homeButton = document.getElementById('home-button');
+if (selectedCharacter) {
+    homeButton.href = `/home/{{ game_code }}/${selectedCharacter}/`;
+}
+const chatButton = document.getElementById('chat-button');
+if (selectedCharacter) {
+    chatButton.href = `/chat/{{ game_code }}/${selectedCharacter}/`;
+}
+</script>
+
+</html>

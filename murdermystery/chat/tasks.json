@@ -1,0 +1,95 @@
+{
+    "detectivejohnson": {
+        "task1": [
+            "Thank Elizabeth Blackwood for inviting the group to dinner. It's your first time meeting her. Give your condolences and say that you worked on a case with the victim in the past.",
+            "Ask Professor Grayson how he knew the victim.",
+            "Tell everyone that you've been invited to investigate what happened to Chelsea Anderson. Mention that you believe the killer is in the room."
+        ],
+        "task2": [
+            "Review your notes from earlier in the evening.",
+            "Approach Professor Grayson and ask him about any recent interactions with Chelsea Anderson.",
+            "Quietly examine the chest that Emily Johnson mentioned and see if there are any clues or signs of a key nearby."
+        ],
+        "task3": [
+            "Call  6ambulances and the police - we've all been poisoned",
+            "Reveal the killer - Elizabeth Blackwood",
+            "tell everyone to take magnesium to delay the poison"
+        ]
+    },
+    "mselizabethblackwood": {
+        "task1": [
+            "Explain how the evening will go. Cocktail, appetizer, and the main meal.",
+            "Explain the character of the victim and that you're so sad she's gone. Go into detail.",
+            "Ask everyone if they want a second cocktail."
+        ],
+        "task2": [
+            "Ask everyone if they want another cocktail. Ask if they want more wine.",
+            "At the end of the appetizer, use the washroom (Check this off when you're in the washroom)"
+        ],
+        "task3": [
+            "Gather the group after dinner and suggest discussing the murder investigation.",
+            "Listen carefully to what each guest has to say about the murder and their suspicions.",
+            "Share your own theories about the murder and who you suspect might be the killer."
+        ]
+    },
+    "professorarthurgrayson": {
+        "task1": [
+            "Exit the room and go to the washroom (be gone for at least 3 minutes).",
+            "Ask Vicky Hart if she knows anything about the victim's last week. Mention she was stressed and he was worried for her.",
+            "Tell the Detective that you're not the killer."
+        ],
+        "task2": [
+            "Write notes about the evening so far on your notepad.",
+            "Mention to everyone the affair Chelsea had with Jonathan.",
+            "reveal the victim's dog is 'maggy'"
+        ],
+        "task3": [
+            "Share your observations with Ms. Elizabeth Blackwood about the interactions between the guests during dinner.",
+            "Converse with Detective Johnson and inquire about the progress of the murder investigation.",
+            "Express your concerns to the group about the potential danger of the mysterious chest."
+        ]
+    },
+    "victoriavickyhart": {
+        "task1": [
+            "If somebody leaves the room, mention that it's odd.",
+            "Ask Jonathan about the affair with the victim. Tell him that she knows about it.",
+            "Ask the detective if he has an idea who killed Chelsea."
+        ],
+        "task2": ["Go to the washroom at the end of the course. And scream when you're in the washroom."],
+        "task3": [
+            "you're dead"
+        ]
+    },
+    "drjonathansmith": {
+        "task1": [
+            "Mention to everybody that you're a doctor and that if anything happens tonight, he will be able to help. Be vague.",
+            "Offer everyone a magnesium supplement. Insist if they say no but it's ok if they don't take.",
+            "Mention he thinks Professor Grayson killed Chelsea. Say you knew he was in love with her."
+        ],
+        "task2": ["Eat and make jokes",
+        "reveal that you have the key"
+    ],
+        "task3": [
+            "Share your concerns about Emily's actions and the mysterious chest with Detective Johnson.",
+            "Engage in a private conversation with Victoria Hart and try to gauge her knowledge of the murder.",
+            "Agree with the idea of examining the chest and suggest that you might have tools to assist."
+        ]
+    },
+    "emilyjohnson": {
+        "task1": [
+            "Explain to everyone that she got a chest in the mail from an unknown sender a day after Chelsea was murdered.",
+            "Get the chest (which is near the catfood) and bring it into the room. You don't have a key.",
+            "Mention you think Jonathan murdered Chelsea."
+        ],
+        "task2": [
+            "Compliment the cooking.",
+            "Refill all the water glasses and then the pitcher.",
+            "Tap your spoon on the dish to get everyone's attention and mention that you think Jonathan killed the victim."
+        ],
+        "task3": [
+            "Converse with Ms. Elizabeth Blackwood about the chest and its potential significance in the murder.",
+            "Have a private discussion with Detective Johnson and discuss your suspicions regarding Jonathan Smith.",
+            "Suggest opening the mysterious chest in front of the group to reveal its contents."
+        ]
+    }
+}

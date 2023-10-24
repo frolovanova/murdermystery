@@ -1,0 +1,435 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ key }} - Waiting Room</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            max-width: 800px;
+            background-color: #f0f0f0;
+        }
+        .character-value {
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: right;
+    margin-right: 50px; /* Add a 50px right margin */
+    font-size: small;
+}
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .character-taken {
+            background-color: #f0f0f0; /* Grey background color */
+            border: 2px solid #ccc; /* Grey border */
+            cursor: not-allowed; /* Change cursor to indicate not selectable */
+}
+
+        #waiting-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        #character-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        #character-list li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            cursor: pointer; /* Add cursor pointer to indicate clickable */
+        }
+
+        #character-list img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+            border-radius: 50%;
+        }
+
+        .character-selected {
+            background-color: #e0f2e0; /* Tinted green background */
+            border: 2px solid #00cc00; /* Green border */
+        }
+
+        .joined-count {
+            text-align: center;
+            margin-top: 20px;
+        }
+        #chat-button {
+            display: block;
+            width: 100px;
+            margin: 20px auto;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
+
+</head>
+<body>
+    <h1>Waiting Room</h1>
+
+    <div id="waiting-container">
+        <h2>Game Key: {{ key }}</h2>
+
+        <ul id="character-list">
+            <li class="{% if waiting_room_state.guy1 == '' %}character-available{% else %}character-taken{% endif %}" id="guy1">
+                <img src="{% static 'images/guy1.png' %}" alt="guy1">
+                <span>Detective Johnson</span>
+                <div class="character-value">
+                    {% if waiting_room_state.guy1 %}
+                        :              Played by {{ waiting_room_state.guy1 }}
+                    {% endif %}
+                </div>
+            </li>
+            <li class="{% if waiting_room_state.girl1 == '' %}character-available{% else %}character-taken{% endif %}" id="girl1">
+                <img src="{% static 'images/girl1.png' %}" alt="girl1">
+                <span>Ms. Elizabeth Blackwood</span>
+                <div class="character-value">
+                    {% if waiting_room_state.girl1 %}
+                        :              Played by {{ waiting_room_state.girl1 }}
+                    {% endif %}
+                </div>
+            </li>
+            <li class="{% if waiting_room_state.guy2 == '' %}character-available{% else %}character-taken{% endif %}" id="guy2">
+                <img src="{% static 'images/guy2.png' %}" alt="guy2">
+                <span>Professor Arthur Grayson</span>
+                <div class="character-value">
+                    {% if waiting_room_state.guy2 %}
+                        :              Played by {{ waiting_room_state.guy2 }}
+                    {% endif %}
+                </div>
+            </li>
+            <li class="{% if waiting_room_state.girl2 == '' %}character-available{% else %}character-taken{% endif %}" id="girl2">
+                <img src="{% static 'images/girl2.png' %}" alt="girl2">
+                <span>Victoria "Vicky" Hart</span>
+                <div class="character-value">
+                    {% if waiting_room_state.girl2 %}
+                        :              Played by {{ waiting_room_state.girl2 }}
+                    {% endif %}
+                </div>
+            </li>
+            <li class="{% if waiting_room_state.guy3 == '' %}character-available{% else %}character-taken{% endif %}" id="guy3">
+                <img src="{% static 'images/guy3.png' %}" alt="guy3">
+                <span>Dr. Jonathan Smith</span>
+                <div class="character-value">
+                    {% if waiting_room_state.guy3 %}
+                        :              Played by {{ waiting_room_state.guy3 }}
+                    {% endif %}
+                </div>
+            </li>
+            <li class="{% if waiting_room_state.girl3 == '' %}character-available{% else %}character-taken{% endif %}" id="girl3">
+                <img src="{% static 'images/girl3.png' %}" alt="girl3">
+                <span>Emily Johnson</span>
+                <div class="character-value">
+                    {% if waiting_room_state.girl3 %}
+                        :              Played by {{ waiting_room_state.girl3 }}
+                    {% endif %}
+                </div>
+            </li>
+        </ul>
+
+        <div class="joined-count">x/6 people joined</div>
+    </div>
+    <a href="" id="chat-button" disabled>Start Game</a>
+
+<script >
+        // Function to encode a value for a cookie
+        function encodeCookieValue(value) {
+            return encodeURIComponent(value);
+        }
+
+        // Function to decode a value from a cookie
+        function decodeCookieValue(encodedValue) {
+            return decodeURIComponent(encodedValue);
+        }
+
+        // Function to set a cookie with encoding
+        function setEncodedCookie(name, value) {
+            Cookies.set(name, encodeCookieValue(value));
+        }
+
+        // Function to get a cookie and decode it
+        function getDecodedCookie(name) {
+            const encodedValue = Cookies.get(name);
+            return encodedValue ? decodeCookieValue(encodedValue) : null;
+        }
+// Function to delete a cookie
+function deleteCookie(name) {
+    Cookies.remove(name); // Use Cookies from js-cookie
+}
+
+    let url = `ws://${window.location.host}/ws/waiting-room/{{ key }}/`
+const socket = new WebSocket(url)
+
+const key = '{{ key }}';
+
+function sendMessage(socket, key) {
+    // Create a JavaScript object with the desired format
+    const messageObject = {
+        'message': {
+            'key': key
+        }
+    };
+
+    // Convert the object to a JSON string
+    const jsonString = JSON.stringify(messageObject);
+    setTimeout(function() {
+        socket.send(jsonString);
+}, 500);
+    // Send the JSON string as the message
+    // Wait for an acknowledgment from the server (timeout after 5 seconds)
+    
+}
+
+function updateAvailableCount() {
+    const characterAvailableDivs = document.querySelectorAll('.character-available');
+    const availableCount = characterAvailableDivs.length;
+    const availableCountElement = document.querySelector('.joined-count');
+    availableCountElement.textContent = `${availableCount} slots available`;
+}
+
+
+ // 2000 milliseconds (2 seconds) delay
+
+
+socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+
+        // Handle the incoming data from the server
+        console.log("Received data from server:", data);
+
+
+        // Update the HTML based on the received data
+        updateCharacterStatus(data);
+    };
+
+    function updateCharacterStatus(data) {
+    
+    // Example: Update character availability based on data
+    const characters = document.querySelectorAll('#character-list li');
+    characters.forEach(character => {
+        const characterId = character.id;
+        const playedBy = data["message"][characterId]; // Get the ":              Played by" info
+
+        console.log(playedBy);
+
+        if (playedBy) {
+            if (getSelectedCharacter() !== characterId) {
+                character.classList.remove('character-available');
+                character.classList.add('character-taken');
+                const playedByElement = character.querySelector('.character-value');
+                if (playedByElement) { // Check if the element exists
+                    playedByElement.textContent = `:              Played by ${playedBy}`;
+                }
+            }
+        } else {
+            character.classList.remove('character-taken');
+            character.classList.add('character-available');
+            const playedByElement = character.querySelector('.character-value');
+            if (playedByElement) { // Check if the element exists
+                playedByElement.textContent = ''; // No ":              Played by" info
+            }
+        }
+    });
+    updateAvailableCount()
+}
+
+
+
+function getSelectedCharacter() {
+    return getDecodedCookie('selectedCharacter');
+}
+
+        // JavaScript to handle character row selection and cookies
+        const characterList = document.getElementById('character-list');
+        const characterItems = characterList.querySelectorAll('li');
+        const chatButton = document.getElementById('chat-button'); // Get the "Start Game" button
+        
+        let selectedCharacter = null; // Initialize the selectedCharacter variable
+        
+        // Function to clean and format the character name for the URL
+        function formatCharacterNameForURL(characterName) {
+            // Remove spaces and periods, and convert to lowercase
+            return characterName.replace(/[\s."]+/g, '').toLowerCase();
+        }
+        
+ 
+// Function to prompt for the player's name
+function promptForName(characterAlt) {
+    const playerName = prompt(`Enter your name for ${characterAlt}:`);
+    if (playerName) {
+        // Send the POST request to update the waiting room
+        sendPostRequest(playerName, characterAlt);
+
+        sendMessage(socket,key);
+
+    return playerName ? playerName : 'Player';
+    }
+    return 0;
+}
+
+// Function to send the POST request
+function sendPostRequest(playerName, characterAlt) {
+    // Retrieve the CSRF token from the cookies
+    const csrfToken = getCookie('csrftoken');
+
+    // Send a POST request to the server with the CSRF token
+    fetch('/update_waiting_room/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken, // Include the CSRF token in the headers
+        },
+        body: JSON.stringify({
+            game_code: '{{ key }}', // Use Django template tags to get the game code
+            player_name: playerName,
+            alt: characterAlt
+        }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                
+                // Handle success, e.g., update the UI
+            } else {
+                // Handle error, e.g., display an error message
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+        updateAvailableCount()
+
+        
+}
+
+// Function to retrieve a specific cookie value
+function getCookie(name) {
+    const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+    return cookieValue ? cookieValue.pop() : '';
+}
+
+
+
+        
+function checkAndSetInitialCharacter(characterItems, chatButton) {
+    const selectedCharacter = getDecodedCookie('selectedCharacter');
+    if (selectedCharacter) {
+        characterItems.forEach(item => {
+            const spanText = item.querySelector('span').textContent;
+            const characterAlt = formatCharacterNameForURL(spanText);
+            if (selectedCharacter === characterAlt) {
+                item.classList.add('character-selected');
+                chatButton.removeAttribute('disabled'); // Enable the button
+                chatButton.setAttribute('href', `/act1/{{ key }}/${characterAlt}`); // Set the button's href
+            }
+        });
+    }
+}
+
+// Function to handle character selection click event
+function handleCharacterSelectionClick(item) {
+    if (item.classList.contains('character-selected')) {
+        // If the row is already selected, remove the styles and cookie
+        item.classList.remove('character-taken');
+        sendPostRequest("", item.getAttribute('id'));
+
+        item.classList.remove('character-selected');
+        sendMessage(socket,key)
+
+        clearSelectedCharacter(chatButton);
+    } else {
+        // Check if there are any items with class 'character-selected'
+        const selectedItems = document.querySelectorAll('.character-selected');
+        if (selectedItems.length === 0) {
+
+            // Remove the 'character-selected' class from all items
+            removeAllCharacterSelections();
+            // Add the 'character-selected' class to the clicked item
+            // Set a cookie to remember the selected character
+            // Prompt for the player's name and save it in a variable
+            const characterAlt = item.querySelector('img').alt;
+            const playerName = promptForName(characterAlt);
+            if (playerName) {
+                item.classList.add('character-selected');
+                setSelectedCharacter(item, chatButton);
+            }
+            // You can now use 'playerName' as needed
+        }
+    }
+}
+
+// Function to remove 'character-selected' class from all items
+function removeAllCharacterSelections() {
+    characterItems.forEach(item => {
+        item.classList.remove('character-selected');
+    });
+}
+
+// Function to set a cookie to remember the selected character
+function setSelectedCharacter(item, chatButton) {
+    const characterAlt = formatCharacterNameForURL(item.querySelector('span').textContent);
+    setEncodedCookie('selectedCharacter', characterAlt);
+    chatButton.removeAttribute('disabled'); // Enable the button
+    chatButton.setAttribute('href', `/act1/{{ key }}/${characterAlt}`); // Set the button's href
+}
+
+
+function clearSelectedCharacter(chatButton) {
+    deleteCookie('selectedCharacter');
+    chatButton.setAttribute('disabled', 'true'); // Disable the button
+    chatButton.removeAttribute('href'); // Clear the button's href
+}
+
+// Call the function passing characterItems and chatButton as arguments
+// });
+
+// Define a function to attach click event listeners to character items
+function attachCharacterSelectionListeners(characterItems) {
+    characterItems.forEach(item => {
+        if (item.classList.contains('character-available') || item.classList.contains('character-selected')) {
+            item.addEventListener('click', () => {
+                handleCharacterSelectionClick(item);
+            });
+        }
+    });
+}
+checkAndSetInitialCharacter(characterItems, chatButton);
+
+// Call the function with your characterItems
+attachCharacterSelectionListeners(characterItems);
+updateAvailableCount()
+
+        </script>
+        
+    
+</body>
+</html>
+
+
+
+
+

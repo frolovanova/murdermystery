@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Investigation Checklist</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            max-width: 800px;
+            background-color: #f0f0f0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #checklist-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .task-list {
+            margin-bottom: 20px;
+        }
+
+        .task-list h2 {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .task-list ul {
+            list-style-type: square;
+            padding-left: 20px;
+        }
+
+        .checkbox {
+            display: none;
+        }
+
+        .checkbox-label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .custom-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 1px solid #ccc;
+            margin-right: 10px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fff;
+        }
+        .checked {
+    text-decoration: line-through; /* Apply strikethrough style */
+    color: #888; /* You can adjust the color as needed */
+}
+
+        .checkbox:checked + .custom-checkbox::before {
+            content: '✓';
+            font-size: 16px;
+        }
+
+        #chat-button {
+            display: block;
+            width: 100px;
+            margin: 20px auto;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        #chat-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Investigation Checklist</h1>
+    <div id="checklist-container">
+        <div class="task-list">
+            <h2>Tasks for {{ character }}</h2>
+            <ul>
+                {% for task, completed in data %}
+                <li {% if completed == 1 %}class='checked{% endif %} >
+                    <input type="checkbox" class="checkbox" id="task{{ forloop.counter }}" {% if completed == 1 %}disabled{% endif %} onchange="sendTaskUpdate('{{ forloop.counter }}', {{ completed }})">
+                    <label class="checkbox-label" for="task{{ forloop.counter }}">
+                        <span class="custom-checkbox"></span>
+                        {{ task }}
+                    </label>
+                </li>
+                
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    
+
+    <a href="/home/{{ game_code }}/{{ character }}/" id="chat-button">Back to Mystery</a>
+
+    <script>
+        const gameCode = '{{ game_code }}';
+    const character = '{{ character }}';
+    const socket1 = new WebSocket(`ws://${window.location.host}/ws/task-updates/`);
+
+    socket1.onmessage = function (event) {
+        const data = JSON.parse(event.data);
+        // Handle the received data (e.g., update the task list)
+    };
+
+    function sendTaskUpdate(task) {
+        const data = {
+            game_code: gameCode,
+            character: character,
+            task: task,
+        };
+        console.log(data)
+
+        socket1.send(JSON.stringify(data));   }
+
+        // Function to add click event listeners to all checkbox items
+        function addCheckboxListeners() {
+            const checkboxes = document.querySelectorAll('.checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    toggleCheckboxStyle(checkbox);
+                });
+            });
+        }
+    
+        // Function to toggle strikethrough style
+        function toggleCheckboxStyle(checkbox) {
+            if (checkbox.checked) {
+                checkbox.setAttribute('disabled', 'true'); // Disable the checkbox once checked
+            }
+            const listItem = checkbox.closest('li');
+            listItem.classList.toggle('checked', checkbox.checked);
+        }
+    
+        // Call the function to add click event listeners when the document is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            addCheckboxListeners();
+        });
+
+//         let url = `ws://${window.location.host}/ws/game-master/{{ game_code }}/`
+// const socket = new WebSocket(url);
+
+socket1.onmessage = function (event) {
+    const data = JSON.parse(event.data);
+    if (data.refresh) {
+        // Refresh the page
+        console.log(data);
+    }
+};
+
+    </script>
+    
+
+</body>
+</html>

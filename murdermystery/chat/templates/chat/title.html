@@ -1,0 +1,109 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Murder Mystery - Title Screen</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            max-width: 800px;
+            background-color: #f0f0f0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #title-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        #title-container img {
+            display: block;
+            margin: 20px auto;
+            width: 350px;
+            height: 350px;
+        }
+
+        #buttons-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #new-game-button, #join-game-button {
+            display: inline-block;
+            width: 150px;
+            padding: 10px;
+            margin: 0 20px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        #new-game-button:hover, #join-game-button:hover {
+            background-color: #0056b3;
+        }
+
+        #key-input {
+            text-transform: uppercase;
+            width: 200px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Murder Mystery</h1>
+
+    <div id="title-container">
+        <!-- Replace with image URLs -->
+        <img src="{% static 'images/4.png' %}" alt="Murder Mystery Image">
+    </div>
+    
+    <div id="buttons-container">
+        <a href="{% url 'new_game' %}" id="new-game-button">New Game</a>
+        <form action="{% url 'waiting_room' %}" method="POST">
+            {% csrf_token %}
+            <input type="text" id="key-input" name="key" placeholder="Enter 5-character key">
+            <button type="submit" id="join-game-button">Join Game</button>
+        </form>
+    </div>
+    
+    
+    <script>
+        // List of image filenames
+        const imageFiles = ["1.webp", "2.jpeg", "3.png", "4.png"];
+    
+        let currentIndex = 0;
+        const imageElement = document.querySelector("#title-container img");
+    
+        function changeImage() {
+            currentIndex = (currentIndex + 1) % imageFiles.length;
+            const imageUrl = `{% static 'images/' %}` + imageFiles[currentIndex];
+            imageElement.src = imageUrl;
+        }
+    
+        // Change the image every 5 seconds
+        setInterval(changeImage, 5000);
+    </script>
+    </body>
+    </html>

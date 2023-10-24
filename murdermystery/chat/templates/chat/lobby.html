@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Text Messaging App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            max-width: 800px;
+            background-color: #f0f0f0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #chat-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        #messages {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .message {
+            background-color: #e2f9ff;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 5px 0;
+        }
+
+        #form {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #007BFF;
+        }
+
+        #send-button {
+            width: 18%;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        #send-button:hover {
+            background-color: #0056b3;
+        }
+
+        #home-button {
+            width: 100px;
+            top: 25px;
+            margin: 50px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        #home-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <a href="/home/{{ game_code }}/{{ selected_character }}" id="home-button">Home</a>
+
+    <h1>Text Messaging App</h1>
+
+    <div id="chat-container">
+        <div id="messages">
+            {% for message in chat_history %}
+            <div class="message">
+                <p><strong>{{ message.sender }}: </strong>{{ message.message }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        <form id="form">
+            <input type="text" name="message" placeholder="Type your message...">
+            <button type="submit" id="send-button">Send</button>
+        </form>
+    </div>
+    
+
+
+    <script>
+        let url = `ws://${window.location.host}/ws/socket-server/{{ concatenated_name }}/`
+        const chatSocket = new WebSocket(url)
+    
+        chatSocket.onmessage = function (e) {
+            let data = JSON.parse(e.data)
+            console.log('Data:', data)
+    
+            if (data.type == 'chat') {
+                let messages = document.getElementById('messages')
+    
+                // Determine whether the message was sent by the current user or received
+                let messageSender = (data.sender === '{{ selected_character }}') ? 'You' : data.sender;
+    
+                messages.insertAdjacentHTML('beforeend', `<div class="message">
+                    <p><strong>${messageSender}:</strong> ${data.message}</p>
+                </div>`)
+            }
+        }
+    
+        let form = document.getElementById('form')
+        form.addEventListener('submit', (e) => {
+            e.preventDefault()
+            let message = e.target.message.value.trim()
+            if (message !== '') {
+                // Display the sender's name as "You" for the message just sent before sending it
+                let messages = document.getElementById('messages')
+                // messages.insertAdjacentHTML('beforeend', `<div class="message">
+                //     <p><strong>You:</strong> ${message}</p>
+                // </div>`)
+    
+                chatSocket.send(JSON.stringify({
+                    'message': message,
+                    'characterpair': '{{ concatenated_name }}', // Pass the value from Django template
+                    'sender': '{{ selected_character }}',
+                    'game_code': '{{ game_code  }}'
+                }))
+                form.reset()
+            }
+        })
+    </script>
+    
+    
+</body>
+</html>

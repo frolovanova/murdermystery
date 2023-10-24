@@ -1,0 +1,223 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Murder Mystery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            max-width: 800px;
+            background-color: #f0f0f0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #home-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+        }
+
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #home-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .act-title {
+            font-weight: bold;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .act-description {
+            margin-bottom: 20px;
+        }
+
+
+/* Style the clickable act title */
+.act-title {
+    cursor: pointer;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-decoration: underline;
+}
+    /* Initially hide the act descriptions */
+/* Define a class to hide elements */
+.hidden {
+    display: none;
+}
+
+
+        #chat-button {
+            display: block;
+            width: 100px;
+            margin: 20px auto;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .chat-button {
+            display: block;
+            width: 100px;
+            margin: 20px auto;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        #chat-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Murder Mystery</h1>
+    <div id="home-container">
+        <button id="act-title">Act {{ act }} Tap To Read </button>
+        {% for description in act_details %}
+            <div class="act-description hidden">
+                {{ description }}
+            </div>
+        {% endfor %}
+    </div>
+    
+
+    <div id="home-container">
+        <div class="act-descriptions">
+            <strong>You are {{ selected_character.name }}</strong>
+            <br>    
+            <img src="{% static selected_character.images %}" alt="{{ selected_character.name }}">
+        </div>
+        <div class="act-descriptions">
+            {{ selected_character.description }}
+        </div>
+        <div class="act-descriptions">
+            <strong>To share with others:</strong>
+        </div>
+        
+        <div class="act-descriptions">
+            <ul>
+                {% for item in selected_character.to_share_with_others %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="act-descriptions">
+            <strong>To keep secret:</strong>
+        </div>
+        
+        <div class="act-descriptions">
+            <ul>
+                {% for item in selected_character.to_keep_secret %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    <a href="/checklist/{{ game_code }}/{{ selected_character.format }}" id="chat-button">Tasks</a>
+
+    <a href="/characters/{{ game_code }}/{{ selected_character.format }}/" id="chat-button">Characters</a>
+    <a href="/act1/{{ game_code }}/{{ selected_character.format }}/" id="chat-button">Video</a>
+    <h5>{{ game_code }}</h5>
+
+</body>
+<script >
+    // Define the data to send in the request
+const gameCode = '{{ game_code }}'; // Use the game code from the template
+// const updateButton = document.getElementById('update-act-button'); // Assuming you have a button with this ID
+
+// updateButton.addEventListener('click', (event) => {
+//     event.preventDefault();
+//     // Prepare the data to send in the POST request
+//     const data = {
+//         game_code: gameCode,
+//         act: 1, // You can specify the increment value here, e.g., 1
+//     };
+
+//     // Make a POST request to the update_game_state view
+//     fetch('/update_game_state/', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//             'X-CSRFToken': getCookie('csrftoken'), // Include the CSRF token
+//         },
+//         body: JSON.stringify(data),
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         if (data.success) {
+//             console.log('Act updated successfully');
+//             // You can add any additional code here to handle success
+//         } else {
+//             console.log('Error:', data.error_message);
+//             // You can add code here to handle errors if needed
+//         }
+//     })
+//     .catch(error => {
+//         console.error('Error:', error);
+//     });
+// });
+
+// Function to retrieve a specific cookie value
+function getCookie(name) {
+    const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+    return cookieValue ? cookieValue.pop() : '';
+}
+
+let url = `ws://${window.location.host}/ws/game-master/{{ game_code }}/`
+const socket = new WebSocket(url);
+
+socket.onmessage = function (event) {
+    const data = JSON.parse(event.data);
+    if (data.refresh) {
+        // Refresh the page
+        console.log(data);
+    }
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleButton = document.getElementById('act-title');
+    const toggleableDivs = document.querySelectorAll('.act-description');
+
+    toggleButton.addEventListener('click', function() {
+        toggleableDivs.forEach(function(div) {
+            div.classList.toggle('hidden');
+        });
+    });
+});
+
+</script>
+
+</html>

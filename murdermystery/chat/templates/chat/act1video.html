@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Act {{ act }} </title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            max-width: 800px;
+            background-color: #f0f0f0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #video-container {
+            max-width: 600px;
+            margin: 20px auto;
+        }
+
+        video {
+            width: 100%;
+            height: auto;
+        }
+
+        #continue-button {
+            display: block;
+            width: 100px;
+            margin: 20px auto;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        #continue-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Act {{ act }}</h1>
+
+    <div id="video-container">
+        <!-- Embed your video here -->
+        <video controls width="640" height="360">
+            <source src="{% static 'videos/act' %}{{ act }}.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <button id="continue-button">Continue</button>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
+
+    <script>
+        const selectedCharacter = Cookies.get('selectedCharacter'); // Make sure 'selected_character' matches the cookie name
+
+        const continueButton = document.getElementById('continue-button');
+
+        continueButton.addEventListener('click', () => {
+            const confirmation = confirm('Are you sure you want to continue?');
+            if (confirmation) {
+                // Redirect to the desired page (e.g., /home)
+                window.location.href = '/home/{{ game_code }}/' + selectedCharacter ;
+            }
+        });
+    </script>
+</body>
+</html>
